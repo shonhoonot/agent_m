@@ -175,7 +175,8 @@ async def _verify_handler(mode, token, challenge):
     if mode == "subscribe" and token == config.FB_VERIFY_TOKEN:
         logger.info("Facebook Webhook баталгаажлаа.")
         return PlainTextResponse(challenge or "")
-    raise HTTPException(status_code=403, detail="Verification failed")
+    logger.warning(f"Webhook verify failed: mode={mode!r}, token={token!r}, expected={config.FB_VERIFY_TOKEN!r}")
+    raise HTTPException(status_code=403, detail=f"Verification failed: mode={mode}, token_match={token == config.FB_VERIFY_TOKEN}")
 
 
 @app.post("/webhook")
