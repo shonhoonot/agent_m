@@ -177,10 +177,22 @@ def chat(psid: str, user_message: str, user_name: str = "") -> str:
             "memory_context": memory_section,
             "facebook_psid": psid,
         })
-        response = result.get("output") or "Уучлаарай, алдаа гарлаа. Дахин оролдоно уу."
-        if not isinstance(response, str):
-            response = str(response)
-        logger.info(f"Agent output type={type(result.get('output'))}, value={str(response)[:100]}")
+        raw = result.get("output") or "Уучлаарай, алдаа гарлаа. Дахин оролдоно уу."
+        # Claude зарим үед list of content blocks буцаадаг — text задлах
+        if isinstance(raw, list):
+            parts = []
+            for block in raw:
+                if isinstance(block, dict):
+                    parts.append(block.get("text", ""))
+                elif isinstance(block, str):
+                    parts.append(block)
+            response = "\n".join(p for p in parts if p).strip()
+        elif isinstance(raw, str):
+            response = raw.strip()
+        else:
+            response = str(raw).strip()
+        if not response:
+            response = "Уучлаарай, алдаа гарлаа. Дахин оролдоно уу."
     except Exception as e:
         logger.error(f"Agent алдаа (psid={psid}): {e}")
         response = f"Уучлаарай, техникийн алдаа гарлаа. {config.CLINIC_PHONE} дугаарт залгана уу."
