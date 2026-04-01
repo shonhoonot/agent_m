@@ -180,6 +180,7 @@ async def _verify_handler(mode, token, challenge):
 
 
 @app.post("/webhook")
+@app.post("/webhook/")
 async def fb_webhook_events(request: Request, background_tasks: BackgroundTasks):
     """Facebook Webhook events хүлээн авах."""
     body = await request.body()
