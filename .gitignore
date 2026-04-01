@@ -1,0 +1,9 @@
+.env
+credentials/google_service_account.json
+*.db
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.DS_Store
