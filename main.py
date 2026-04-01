@@ -180,9 +180,16 @@ async def _verify_handler(mode, token, challenge):
 
 
 @app.post("/webhook")
-@app.post("/webhook/")
 async def fb_webhook_events(request: Request, background_tasks: BackgroundTasks):
-    """Facebook Webhook events хүлээн авах."""
+    return await _handle_webhook(request, background_tasks)
+
+
+@app.post("/webhook/")
+async def fb_webhook_events_slash(request: Request, background_tasks: BackgroundTasks):
+    return await _handle_webhook(request, background_tasks)
+
+
+async def _handle_webhook(request: Request, background_tasks: BackgroundTasks):
     body = await request.body()
 
     # Signature шалгах
