@@ -177,7 +177,10 @@ def chat(psid: str, user_message: str, user_name: str = "") -> str:
             "memory_context": memory_section,
             "facebook_psid": psid,
         })
-        response = result.get("output", "Уучлаарай, алдаа гарлаа. Дахин оролдоно уу.")
+        response = result.get("output") or "Уучлаарай, алдаа гарлаа. Дахин оролдоно уу."
+        if not isinstance(response, str):
+            response = str(response)
+        logger.info(f"Agent output type={type(result.get('output'))}, value={str(response)[:100]}")
     except Exception as e:
         logger.error(f"Agent алдаа (psid={psid}): {e}")
         response = f"Уучлаарай, техникийн алдаа гарлаа. {config.CLINIC_PHONE} дугаарт залгана уу."

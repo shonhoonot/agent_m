@@ -121,7 +121,13 @@ async def process_message(psid: str, text: str, user_name: str) -> None:
             None,
             lambda: chat(psid=psid, user_message=text, user_name=user_name),
         )
-        # Урт мессежийг хувааж илгээх (FB 2000 тэмдэгтийн хязгаар)
+        # None эсвэл буруу төрлийг шалгах
+        if not response or not isinstance(response, str):
+            response = "Уучлаарай, хариу боловсруулахад алдаа гарлаа."
+        response = response.strip()
+        if not response:
+            response = "Уучлаарай, хариу боловсруулахад алдаа гарлаа."
+        logger.info(f"Agent response (psid={psid}): {response[:100]}")
         chunks = _split_message(response, max_length=1900)
         for chunk in chunks:
             await send_fb_message(psid, chunk)
